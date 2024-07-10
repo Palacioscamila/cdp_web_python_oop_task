@@ -1,36 +1,30 @@
-# このモジュールをインクルードすると、自身の所有するItemインスタンスを操れるようになります。
-
 from item import Item
 from tabulate import tabulate
 from itertools import groupby
 
-def items_list(self):   # 自身の所有する（自身がオーナーとなっている）全てのItemインスタンスを返します。
-    items = [item for item in Item.item_all() if item.owner == self]
+def items_list(user):  # Devuelve todas las instancias de elementos propiedad del usuario.
+    items = [item for item in Item.item_all() if item.owner == user]
     return items
 
-def pick_items(self, number, quantity):   # numberと対応した自身の所有するItemインスタンスを指定されたquantitiy分返します。
-    items = filter(lambda num: num["number"] == number, _stock(self))
+def pick_items(user, number, quantity):  # Devuelve la cantidad especificada de instancias de elementos que posee y que corresponden al número.
+    items = filter(lambda x: x["number"] == number, _stock(user))
     items = list(items)
-    if len(items) == 0:
-        return []
-    elif len(items[0]["items"]) < quantity:
+    if len(items) == 0 or len(items[0]["items"]) < quantity:
         return []
     else:
         return items[0]["items"][0:quantity]
 
-def show_items(self):   # 自身の所有するItemインスタンスの在庫状況を、["番号", "商品名", "金額", "数量"]という列でテーブル形式にして出力します。
+def show_items(user):  # Muestra el estado del inventario de sus propias instancias de artículos en formato de tabla.
     table_data = []
-    for stock in _stock(self):
+    for stock in _stock(user):
         table_data.append([stock['number'], stock['label']['name'], stock['label']['price'], len(stock['items'])])
-    print(tabulate(table_data, headers=["番号", "商品名", "金額", "数量"], tablefmt="grid"))    # tabulateモジュールを使ってテーブル形式で結果を出力
+    print(tabulate(table_data, headers=["Número", "Nombre del producto", "Precio", "Cantidad"], tablefmt="grid"))
 
-def _stock(self):   # 自身の所有するItemインスタンスの在庫状況を返します。
-    item_ls = self.items_list()
+def _stock(user):  # Devuelve el estado del stock de la instancia del artículo que posee.
+    item_ls = items_list(user)
     item_ls.sort(key=lambda m: m.name)
-    group_list = []
-    for key, group in groupby(item_ls, key=lambda m: m.name):   # Item#nameで同じ値を返すItemインスタンスで分類します。
-        group_list.append(list(group))
+    group_list = [list(group) for _, group in groupby(item_ls, key=lambda m: m.name)]
     stock = []
-    for index, item in enumerate(group_list):
-        stock.append({"number": index, "label": {"name": item[0].name, "price": item[0].price}, "items": item})   # itemsの中には、分類されたItemインスタンスが格納されます。
+    for index, item_group in enumerate(group_list):
+        stock.append({"number": index, "label": {"name": item_group[0].name, "price": item_group[0].price}, "items": item_group})
     return stock

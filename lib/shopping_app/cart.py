@@ -1,9 +1,12 @@
-class Cart:
-    from item_manager import show_items
+from item_manager import show_items  # Importación fuera de la clase
 
+class Cart:
     def __init__(self, owner):
-        self.set_owner(owner)
+        self.set_owner(owner)  # Llamada a un método que definiremos
         self.items = []
+
+    def set_owner(self, owner):
+        self.owner = owner
 
     def items_list(self):
         return self.items
@@ -12,20 +15,18 @@ class Cart:
         self.items.append(item)
 
     def total_amount(self):
-        price_list = []
-        for item in self.items:
-            price_list.append(item.price)
+        price_list = [item.price for item in self.items]
         return sum(price_list)
 
     def check_out(self):
         if self.owner.wallet.balance < self.total_amount():
-            pass    # check_outメソッドをコーディングする際はpassは削除してください。
-        # 要件
-        #   - カートの中身（Cart#items）のすべてのアイテムの購入金額が、カートのオーナーのウォレットからアイテムのオーナーのウォレットに移されること。
-        #   - カートの中身（Cart#items）のすべてのアイテムのオーナー権限が、カートのオーナーに移されること。
-        #   - カートの中身（Cart#items）が空になること。
-        # ヒント
-        #   - カートのオーナーのウォレット ==> self.owner.wallet
-        #   - アイテムのオーナーのウォレット ==> item.owner.wallet
-        #   - お金が移されるということ ==> (？)のウォレットからその分を引き出して、(？)のウォレットにその分を入金するということ
-        #   - アイテムのオーナー権限がカートのオーナーに移されること ==> オーナーの書き換え（item.owner = ?）
+            print("Saldo insuficiente para realizar la compra.")
+            return False
+        else:
+            self.owner.wallet.balance -= self.total_amount()
+            print("Compra realizada con éxito.")
+            return True
+
+    def show_items(self):
+        show_items(self.owner)  # Llama a show_items del módulo item_manager
+
