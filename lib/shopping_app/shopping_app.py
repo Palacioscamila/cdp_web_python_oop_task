@@ -56,6 +56,8 @@ if input() == "yes":
     if customer.cart.check_out():
         for item in customer.cart.items:
             item.set_owner(customer)
+        seller.wallet.deposit(customer.cart.total_amount())
+        customer.cart.empty()
 
 print("୨୧┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈Resultado┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈୨୧")
 print(f"🛍️ Productos comprados por {customer.name}:")

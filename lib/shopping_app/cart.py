@@ -27,6 +27,9 @@ class Cart:
             print("Compra realizada con éxito.")
             return True
 
+    def empty(self):
+        self.items = []
+
     def show_items(self):
         table_data = []
         for item in self.items:
