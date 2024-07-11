@@ -4,17 +4,21 @@ from seller import Seller
 
 # Crear instancia de Seller y añadir artículos
 seller = Seller("Tienda DIC")
-for _ in range(10):
-    Item("CPU", 40830, seller)
-    Item("memoria", 13880, seller)
-    Item("tarjeta madre", 28980, seller)
-    Item("unidad de fuente de alimentación", 8980, seller)
-    Item("PC", 8727, seller)
-    Item("Disco duro de 3,5 pulgadas", 10980, seller)
-    Item("SSD de 2,5 pulgadas", 13370, seller)
-    Item("M.2 SSD", 12980, seller)
-    Item("Enfriador de CPU", 13400, seller)
+items = [
+    Item("CPU", 40830, seller),
+    Item("memoria", 13880, seller),
+    Item("tarjeta madre", 28980, seller),
+    Item("unidad de fuente de alimentación", 8980, seller),
+    Item("PC", 8727, seller),
+    Item("Disco duro de 3,5 pulgadas", 10980, seller),
+    Item("SSD de 2,5 pulgadas", 13370, seller),
+    Item("M.2 SSD", 12980, seller),
+    Item("Enfriador de CPU", 13400, seller),
     Item("tablero grafico", 23800, seller)
+]
+
+for item in items:
+    seller.add_item(item)
 
 print("🤖 Por favor, ingresa tu nombre")
 customer_name = input()
@@ -35,9 +39,10 @@ while not end_shopping:
     print("⛏️ Por favor, ingrese la cantidad del producto")
     quantity = int(input())
 
-    items = seller.pick_items(number, quantity)
-    for item in items:
-        customer.cart.add(item)
+    items_to_buy = seller.pick_items(number, quantity)
+    if items_to_buy:
+        for item in items_to_buy:
+            customer.cart.add(item)
 
     print("🛒 Contenido del carrito:")
     customer.cart.show_items()
@@ -48,7 +53,9 @@ while not end_shopping:
 
 print("💸 ¿Confirmar tu compra? (yes/no)")
 if input() == "yes":
-    customer.cart.check_out()
+    if customer.cart.check_out():
+        for item in customer.cart.items:
+            item.set_owner(customer)
 
 print("୨୧┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈Resultado┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈୨୧")
 print(f"🛍️ Productos comprados por {customer.name}:")

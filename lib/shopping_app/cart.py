@@ -1,8 +1,8 @@
-from item_manager import show_items  # Importación fuera de la clase
+from tabulate import tabulate
 
 class Cart:
     def __init__(self, owner):
-        self.set_owner(owner)  # Llamada a un método que definiremos
+        self.set_owner(owner)
         self.items = []
 
     def set_owner(self, owner):
@@ -28,5 +28,7 @@ class Cart:
             return True
 
     def show_items(self):
-        show_items(self.owner)  # Llama a show_items del módulo item_manager
-
+        table_data = []
+        for item in self.items:
+            table_data.append([item.name, item.price])
+        print(tabulate(table_data, headers=["Nombre del producto", "Precio"], tablefmt="grid"))
